@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)https://note.youdao.com/newEditor/bulb.html -->
+<html manifest="manifest.appcache?ee8d6696a68aa7c1cc18"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>bulb editor</title>
+  <style type="text/css">::-webkit-scrollbar {
+  background: transparent;
+  border-radius: 4px;
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-button {
+  display: none;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  min-height: 15px;
+  width: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7d7d7d;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #7d7d7d;
+}
+</style><style type="text/css">@keyframes blinkAnimation {
+  50% {
+    border-color: transparent;
+  }
+}
+.caret.blink {
+  animation: 1s blinkAnimation step-end infinite;
+}
+@keyframes blinkAnimation-restart {
+  50% {
+    border-color: transparent;
+  }
+}
+.caret.blink-restart {
+  animation: 1s blinkAnimation-restart step-end infinite;
+}
+*:not(input)::selection {
+  background-color: transparent;
+}
+</style><style type="text/css">.bulb-drag-shadow > * {
+  position: absolute;
+  -webkit-mask-image: -webkit-gradient(linear, left top, right bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0)));
+  pointer-events: none;
+}
+</style><style type="text/css">.ant-message {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  -webkit-font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum';
+  position: fixed;
+  top: 16px;
+  left: 0;
+  z-index: 1010;
+  width: 100%;
+  pointer-events: none;
+}
+.ant-message-notice {
+  padding: 8px;
+  text-align: center;
+}
+.ant-message-notice:first-child {
+  margin-top: -8px;
+}
+.ant-message-notice-content {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: all;
+}
+.ant-message-success .anticon {
+  color: #52c41a;
+}
+.ant-message-error .anticon {
+  color: #f5222d;
+}
+.ant-message-warning .anticon {
+  color: #faad14;
+}
+.ant-message-info .anticon,
+.ant-message-loading .anticon {
+  color: #1890ff;
+}
+.ant-message .anticon {
+  position: relative;
+  top: 1px;
+  margin-right: 8px;
+  font-size: 16px;
+}
+.ant-message-notice.move-up-leave.move-up-leave-active {
+  overflow: hidden;
+  -webkit-animation-name: MessageMoveOut;
+  animation-name: MessageMoveOut;
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
+}
+@-webkit-keyframes MessageMoveOut {
+  0% {
+    max-height: 150px;
+    padding: 8px;
+    opacity: 1;
+  }
+  100% {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+  }
+}
+@keyframes MessageMoveOut {
+  0% {
+    max-height: 150px;
+    padding: 8px;
+    opacity: 1;
+  }
+  100% {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+  }
+}
+</style><style type="text/css">.ant-message {
+  font-size: 12px;
+  font-family: PingFangSC-Medium, PingFang SC;
+  font-weight: 500;
+  line-height: 17px;
+}
+.ant-message .ant-message-custom-content.ant-message-error {
+  display: flex;
+  color: #ed7171;
+}
+.ant-message-error > span:last-child {
+  margin-left: 0.5em;
+}
+.ant-message .ant-message-notice-content {
+  box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+.ant-message-success {
+  display: flex;
+}
+.ant-message-success > span:last-child {
+  margin-left: 0.5em;
+}
+</style><style type="text/css">.code-theme-default pre {
+  border-left: 1px solid rgba(208, 212, 217, 0.5);
+  border-right: 1px solid rgba(208, 212, 217, 0.5);
+}
+.code-theme-default pre:first-child {
+  border-top: 1px solid rgba(208, 212, 217, 0.5);
+}
+.code-theme-default pre:last-child {
+  border-bottom: 1px solid rgba(208, 212, 217, 0.5);
+}
+.code-theme-default pre {
+  background-color: #f7f7f7;
+  color: #41464b;
+  line-height: 1.3;
+}
+.code-theme-default .plain {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-default .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+  font-weight: 500;
+}
+.code-theme-default .token.comment,
+.code-theme-default .token.prolog,
+.code-theme-default .token.doctype,
+.code-theme-default .token.cdata {
+  color: #708090;
+}
+.code-theme-default .token.punctuation {
+  color: #999;
+}
+.code-theme-default .token .namespace {
+  opacity: 0.7;
+}
+.code-theme-default .token.property,
+.code-theme-default .token.tag,
+.code-theme-default .token.boolean,
+.code-theme-default .token.number,
+.code-theme-default .token.constant,
+.code-theme-default .token.symbol,
+.code-theme-default .token.deleted {
+  color: #905;
+}
+.code-theme-default .token.selector,
+.code-theme-default .token.attr-name,
+.code-theme-default .token.string,
+.code-theme-default .token.char,
+.code-theme-default .token.builtin,
+.code-theme-default .token.inserted {
+  color: #690;
+}
+.code-theme-default .token.operator,
+.code-theme-default .token.entity,
+.code-theme-default .token.url {
+  background: rgba(255, 255, 255, 0.5);
+  color: #9a6e3a;
+}
+.code-theme-default .token.atrule,
+.code-theme-default .token.attr-value,
+.code-theme-default .token.keyword {
+  color: #07a;
+}
+.code-theme-default .token.function,
+.code-theme-default .token.class-name {
+  color: #dd4a68;
+}
+.code-theme-default .token.regex,
+.code-theme-default .token.important,
+.code-theme-default .token.variable {
+  color: #e90;
+}
+.code-theme-default .token.important,
+.code-theme-default .token.bold {
+  font-weight: bold;
+}
+.code-theme-default .token.italic {
+  font-style: italic;
+}
+.code-theme-default .token.entity {
+  cursor: help;
+}
+.code-theme-coy pre {
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-coy pre:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-coy pre:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-coy .plain,
+.code-theme-coy .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-coy pre {
+  background: none;
+  background-attachment: local;
+  background-color: #fdfdfd;
+  background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-origin: content-box;
+  background-size: 3em 3em;
+  border-left: 10px solid #358ccb;
+  box-shadow: -1px 0 0 0 #358ccb, 0 0 0 0 #dfdfdf;
+  box-sizing: border-box;
+  color: #000;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  hyphens: none;
+  line-height: 1.6;
+  padding: 0 0 0 1em;
+  position: relative;
+  tab-size: 4;
+  text-align: left;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+}
+.code-theme-coy pre:nth-child(2n+1) {
+  background-color: #f6fafe;
+}
+.code-theme-coy pre::before,
+.code-theme-coy pre::after {
+  bottom: 0.75em;
+  box-shadow: 0 13px 8px #979797;
+  content: '';
+  display: block;
+  height: 20%;
+  left: 0.18em;
+  max-height: 13em;
+  position: absolute;
+  transform: rotate(-2deg);
+  width: 40%;
+  z-index: -2;
+}
+.code-theme-coy .plain {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-coy .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+  font-weight: 500;
+}
+.code-theme-coy .token.comment,
+.code-theme-coy .token.block-comment,
+.code-theme-coy .token.prolog,
+.code-theme-coy .token.doctype,
+.code-theme-coy .token.cdata {
+  color: #7d8b99;
+}
+.code-theme-coy .token.punctuation {
+  color: #5f6364;
+}
+.code-theme-coy .token.property,
+.code-theme-coy .token.tag,
+.code-theme-coy .token.boolean,
+.code-theme-coy .token.number,
+.code-theme-coy .token.function-name,
+.code-theme-coy .token.constant,
+.code-theme-coy .token.symbol,
+.code-theme-coy .token.deleted {
+  color: #c92c2c;
+}
+.code-theme-coy .token.selector,
+.code-theme-coy .token.attr-name,
+.code-theme-coy .token.string,
+.code-theme-coy .token.char,
+.code-theme-coy .token.function,
+.code-theme-coy .token.builtin,
+.code-theme-coy .token.inserted {
+  color: #2f9c0a;
+}
+.code-theme-coy .token.operator,
+.code-theme-coy .token.entity,
+.code-theme-coy .token.url,
+.code-theme-coy .token.variable {
+  background: rgba(255, 255, 255, 0.5);
+  color: #a67f59;
+}
+.code-theme-coy .token.atrule,
+.code-theme-coy .token.attr-value,
+.code-theme-coy .token.keyword,
+.code-theme-coy .token.class-name {
+  color: #1990b8;
+}
+.code-theme-coy .token.regex,
+.code-theme-coy .token.important {
+  color: #e90;
+}
+.code-theme-coy .token.style,
+.code-theme-coy .token.string {
+  background: rgba(255, 255, 255, 0.5);
+  color: #a67f59;
+}
+.code-theme-coy .token.important {
+  font-weight: normal;
+}
+.code-theme-coy .token.bold {
+  font-weight: bold;
+}
+.code-theme-coy .token.italic {
+  font-style: italic;
+}
+.code-theme-coy .token.entity {
+  cursor: help;
+}
+.code-theme-coy .token.namespace {
+  opacity: 0.7;
+}
+.code-theme-tomorrow pre {
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-tomorrow pre:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-tomorrow pre:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-tomorrow .plain,
+.code-theme-tomorrow .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+  color: #aaafb4;
+}
+.code-theme-tomorrow pre {
+  background: #2d2d2d;
+  caret-color: #fff;
+  color: #ccc;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  hyphens: none;
+  line-height: 1.3;
+  tab-size: 4;
+  text-align: left;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+}
+.code-theme-tomorrow .token.comment,
+.code-theme-tomorrow .token.block-comment,
+.code-theme-tomorrow .token.prolog,
+.code-theme-tomorrow .token.doctype,
+.code-theme-tomorrow .token.cdata {
+  color: #999;
+}
+.code-theme-tomorrow .token.punctuation {
+  color: #ccc;
+}
+.code-theme-tomorrow .token.tag,
+.code-theme-tomorrow .token.attr-name,
+.code-theme-tomorrow .token.namespace,
+.code-theme-tomorrow .token.deleted {
+  color: #e2777a;
+}
+.code-theme-tomorrow .token.function-name {
+  color: #6196cc;
+}
+.code-theme-tomorrow .token.boolean,
+.code-theme-tomorrow .token.number,
+.code-theme-tomorrow .token.function {
+  color: #f08d49;
+}
+.code-theme-tomorrow .token.property,
+.code-theme-tomorrow .token.class-name,
+.code-theme-tomorrow .token.constant,
+.code-theme-tomorrow .token.symbol {
+  color: #f8c555;
+}
+.code-theme-tomorrow .token.selector,
+.code-theme-tomorrow .token.important,
+.code-theme-tomorrow .token.atrule,
+.code-theme-tomorrow .token.keyword,
+.code-theme-tomorrow .token.builtin {
+  color: #cc99cd;
+}
+.code-theme-tomorrow .token.string,
+.code-theme-tomorrow .token.char,
+.code-theme-tomorrow .token.attr-value,
+.code-theme-tomorrow .token.regex,
+.code-theme-tomorrow .token.variable {
+  color: #7ec699;
+}
+.code-theme-tomorrow .token.operator,
+.code-theme-tomorrow .token.entity,
+.code-theme-tomorrow .token.url {
+  color: #67cdcc;
+}
+.code-theme-tomorrow .token.important,
+.code-theme-tomorrow .token.bold {
+  font-weight: bold;
+}
+.code-theme-tomorrow .token.italic {
+  font-style: italic;
+}
+.code-theme-tomorrow .token.entity {
+  cursor: help;
+}
+.code-theme-tomorrow .token.inserted {
+  color: #008000;
+}
+.code-theme-okaidia pre {
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-okaidia pre:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-okaidia pre:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0);
+}
+.code-theme-okaidia .plain,
+.code-theme-okaidia .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-okaidia pre {
+  background: #272822;
+  caret-color: #fff;
+  color: #f8f8f2;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  hyphens: none;
+  line-height: 1.3;
+  tab-size: 4;
+  text-align: left;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+}
+.code-theme-okaidia .token.comment,
+.code-theme-okaidia .token.prolog,
+.code-theme-okaidia .token.doctype,
+.code-theme-okaidia .token.cdata {
+  color: #708090;
+}
+.code-theme-okaidia .token.punctuation {
+  color: #f8f8f2;
+}
+.code-theme-okaidia .token.namespace {
+  opacity: 0.7;
+}
+.code-theme-okaidia .token.property,
+.code-theme-okaidia .token.tag,
+.code-theme-okaidia .token.constant,
+.code-theme-okaidia .token.symbol,
+.code-theme-okaidia .token.deleted {
+  color: #f92672;
+}
+.code-theme-okaidia .token.boolean,
+.code-theme-okaidia .token.number {
+  color: #ae81ff;
+}
+.code-theme-okaidia .token.selector,
+.code-theme-okaidia .token.attr-name,
+.code-theme-okaidia .token.string,
+.code-theme-okaidia .token.char,
+.code-theme-okaidia .token.builtin,
+.code-theme-okaidia .token.inserted {
+  color: #a6e22e;
+}
+.code-theme-okaidia .token.operator,
+.code-theme-okaidia .token.entity,
+.code-theme-okaidia .token.url,
+.code-theme-okaidia .token.language-css .string,
+.code-theme-okaidia .token.style .string,
+.code-theme-okaidia .token.variable {
+  color: #f8f8f2;
+}
+.code-theme-okaidia .token.atrule,
+.code-theme-okaidia .token.attr-value,
+.code-theme-okaidia .token.function,
+.code-theme-okaidia .token.class-name {
+  color: #e6db74;
+}
+.code-theme-okaidia .token.keyword {
+  color: #66d9ef;
+}
+.code-theme-okaidia .token.regex,
+.code-theme-okaidia .token.important {
+  color: #fd971f;
+}
+.code-theme-okaidia .token.important,
+.code-theme-okaidia .token.bold {
+  font-weight: bold;
+}
+.code-theme-okaidia .token.italic {
+  font-style: italic;
+}
+.code-theme-okaidia .token.entity {
+  cursor: help;
+}
+.code-theme-Ateliersulphurpool pre {
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+.code-theme-Ateliersulphurpool pre:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.code-theme-Ateliersulphurpool pre:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.code-theme-Ateliersulphurpool .plain,
+.code-theme-Ateliersulphurpool .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-Ateliersulphurpool pre {
+  background: #f5f7ff;
+  color: #5e6687;
+  direction: ltr;
+  font-family: Consolas, Menlo, Monaco, 'Andale Mono WT', 'Andale Mono', 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', 'Courier New', Courier, monospace;
+  font-size: 14px;
+  hyphens: none;
+  line-height: 1.375;
+  margin: 0;
+  tab-size: 4;
+  text-align: left;
+  word-break: normal;
+  word-spacing: normal;
+}
+.code-theme-Ateliersulphurpool .token.comment,
+.code-theme-Ateliersulphurpool .token.prolog,
+.code-theme-Ateliersulphurpool .token.doctype,
+.code-theme-Ateliersulphurpool .token.cdata {
+  color: #898ea4;
+}
+.code-theme-Ateliersulphurpool .token.punctuation {
+  color: #5e6687;
+}
+.code-theme-Ateliersulphurpool .token.namespace {
+  opacity: 0.7;
+}
+.code-theme-Ateliersulphurpool .token.operator,
+.code-theme-Ateliersulphurpool .token.boolean,
+.code-theme-Ateliersulphurpool .token.number {
+  color: #c76b29;
+}
+.code-theme-Ateliersulphurpool .token.property {
+  color: #c08b30;
+}
+.code-theme-Ateliersulphurpool .token.tag {
+  color: #3d8fd1;
+}
+.code-theme-Ateliersulphurpool .token.string {
+  color: #22a2c9;
+}
+.code-theme-Ateliersulphurpool .token.selector {
+  color: #6679cc;
+}
+.code-theme-Ateliersulphurpool .token.attr-name {
+  color: #c76b29;
+}
+.code-theme-Ateliersulphurpool .token.entity,
+.code-theme-Ateliersulphurpool .token.url,
+.code-theme-Ateliersulphurpool .token.string,
+.code-theme-Ateliersulphurpool .token.string {
+  color: #22a2c9;
+}
+.code-theme-Ateliersulphurpool .token.attr-value,
+.code-theme-Ateliersulphurpool .token.keyword,
+.code-theme-Ateliersulphurpool .token.control,
+.code-theme-Ateliersulphurpool .token.directive,
+.code-theme-Ateliersulphurpool .token.unit {
+  color: #ac9739;
+}
+.code-theme-Ateliersulphurpool .token.statement,
+.code-theme-Ateliersulphurpool .token.regex,
+.code-theme-Ateliersulphurpool .token.atrule {
+  color: #22a2c9;
+}
+.code-theme-Ateliersulphurpool .token.placeholder,
+.code-theme-Ateliersulphurpool .token.variable {
+  color: #3d8fd1;
+}
+.code-theme-Ateliersulphurpool .token.deleted {
+  text-decoration: line-through;
+}
+.code-theme-Ateliersulphurpool .token.inserted {
+  border-bottom: 1px dotted #202746;
+  text-decoration: none;
+}
+.code-theme-Ateliersulphurpool .token.italic {
+  font-style: italic;
+}
+.code-theme-Ateliersulphurpool .token.important,
+.code-theme-Ateliersulphurpool .token.bold {
+  font-weight: bold;
+}
+.code-theme-Ateliersulphurpool .token.important {
+  color: #c94922;
+}
+.code-theme-Ateliersulphurpool .token.entity {
+  cursor: help;
+}
+.code-theme-vs pre {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+.code-theme-vs pre:first-child {
+  border-top: 1px solid #ddd;
+}
+.code-theme-vs pre:last-child {
+  border-bottom: 1px solid #ddd;
+}
+.code-theme-vs .plain,
+.code-theme-vs .token {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  font-weight: normal;
+}
+.code-theme-vs pre {
+  background-color: #fff;
+  color: #393a34;
+  direction: ltr;
+  font-family: 'Consolas', 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace;
+  font-size: 0.95em;
+  hyphens: none;
+  line-height: 1.6em;
+  margin: 0;
+  padding: 2px 0;
+  tab-size: 4;
+  text-align: left;
+  word-break: normal;
+  word-spacing: normal;
+}
+.code-theme-vs .token.comment,
+.code-theme-vs .token.prolog,
+.code-theme-vs .token.doctype,
+.code-theme-vs .token.cdata {
+  color: #008000;
+  font-style: italic;
+}
+.code-theme-vs .token.namespace {
+  opacity: 0.7;
+}
+.code-theme-vs .token.string {
+  color: #a31515;
+}
+.code-theme-vs .token.punctuation,
+.code-theme-vs .token.operator {
+  color: #393a34;
+}
+.code-theme-vs .token.url,
+.code-theme-vs .token.symbol,
+.code-theme-vs .token.number,
+.code-theme-vs .token.boolean,
+.code-theme-vs .token.variable,
+.code-theme-vs .token.constant,
+.code-theme-vs .token.inserted {
+  color: #36acaa;
+}
+.code-theme-vs .token.function {
+  color: #00009f;
+}
+.code-theme-vs .token.deleted,
+.code-theme-vs .token.tag {
+  color: #9a050f;
+}
+.code-theme-vs .token.selector,
+.code-theme-vs .token.keyword {
+  color: #00009f;
+}
+.code-theme-vs .token.important,
+.code-theme-vs .token.bold {
+  font-weight: bold;
+}
+.code-theme-vs .token.italic {
+  font-style: italic;
+}
+.code-theme-vs .token.class-name,
+.code-theme-vs .token.property {
+  color: #2b91af;
+}
+.code-theme-vs .token.tag,
+.code-theme-vs .token.selector {
+  color: #800000;
+}
+.code-theme-vs .token.attr-name,
+.code-theme-vs .token.property,
+.code-theme-vs .token.regex,
+.code-theme-vs .token.entity {
+  color: #f00;
+}
+</style><script charset="utf-8" src="./lazy.ee8d6696a68aa7c1cc18.js"></script><script charset="utf-8" src="./6.ee8d6696a68aa7c1cc18.js"></script><script charset="utf-8" src="./5.ee8d6696a68aa7c1cc18.js"></script><script charset="utf-8" src="./4.ee8d6696a68aa7c1cc18.js"></script><style type="text/css">/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+}
+main {
+  display: block;
+}
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+a {
+  background-color: transparent;
+}
+abbr[title] {
+  border-bottom: none;
+  text-decoration: underline;
+  text-decoration: underline dotted;
+}
+b,
+strong {
+  font-weight: bolder;
+}
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -0.25em;
+}
+sup {
+  top: -0.5em;
+}
+img {
+  border-style: none;
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+button,
+input {
+  overflow: visible;
+}
+button,
+select {
+  text-transform: none;
+}
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+legend {
+  box-sizing: border-box;
+  color: inherit;
+  display: table;
+  max-width: 100%;
+  padding: 0;
+  white-space: normal;
+}
+progress {
+  vertical-align: baseline;
+}
+textarea {
+  overflow: auto;
+}
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+[type="search"] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+details {
+  display: block;
+}
+summary {
+  display: list-item;
+}
+template {
+  display: none;
+}
+[hidden] {
+  display: none;
+}
+</style><style data-emotion="css-global"></style><style data-emotion="css-global"></style><style data-emotion="css-global"></style><style data-emotion="css-global"></style><style data-emotion="css-global"></style><style data-emotion="css"></style><style type="text/css">.ant-back-top {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  -webkit-font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum';
+  position: fixed;
+  right: 100px;
+  bottom: 50px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+.ant-back-top-content {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-radius: 20px;
+  -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ant-back-top-content:hover {
+  background-color: rgba(0, 0, 0, 0.65);
+  -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ant-back-top-icon {
+  width: 14px;
+  height: 16px;
+  margin: 12px auto;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAoCAYAAACWwljjAAAABGdBTUEAALGPC/xhBQAAAbtJREFUWAntmMtKw0AUhhMvS5cuxILgQlRUpIggIoKIIoigG1eC+AA+jo+i6FIXBfeuXIgoeKVeitVWJX5HWhhDksnUpp3FDPyZk3Nm5nycmZKkXhAEOXSA3lG7muTeRzmfy6HneUvIhnYkQK+Q9NhAA0Opg0vBEhjBKHiyb8iGMyQMOYuK41BcBSypAL+MYXSKjtFAW7EAGEO3qN4uMQbbAkXiSfRQJ1H6a+yhlkKRcAoVFYiweYNjtCVQJJpBz2GCiPt7fBOZQpFgDpUikse5HgnkM4Fi4QX0Fpc5wf9EbLqpUCy4jMoJSXWhFwbMNgWKhVbRhy5jirhs9fy/oFhgHVVTJEs7RLZ8sSEoJm6iz7SZDMbJ+/OKERQTttCXQRLToRUmrKWCYuA2+jbN0MB4OQobYShfdTCgn/sL1K36M7TLrN3n+758aPy2rrpR6+/od5E8tf/A1uLS9aId5T7J3CNYihkQ4D9PiMdMC7mp4rjB9kjFjZp8BlnVHJBuO1yFXIV0FdDF3RlyFdJVQBdv5AxVdIsq8apiZ2PyYO1EVykesGfZEESsCkweyR8MUW+V8uJ1gkYipmpdP1pm2aJVPEGzAAAAAElFTkSuQmCC) 1% no-repeat;
+}
+@media screen and (max-width: 768px) {
+  .ant-back-top {
+    right: 60px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .ant-back-top {
+    right: 20px;
+  }
+}
+</style></head>
+  <body>
+  <script type="text/javascript" src="./vendors.ee8d6696a68aa7c1cc18.js"></script><script type="text/javascript" src="./main.bundle.ee8d6696a68aa7c1cc18.js"></script><div id="wrapper"><div id="loading" style="display: none;"><div class="css-1r3smr1"></div><div class="css-190fj8z"><div class="css-tm3fzc"><div class="css-822c8v"></div></div><div class="css-1ug1132"><div class="css-10mpizh"></div></div><div class="css-a5bt3e"><div class="css-1kl9vky"></div></div><div class="css-1t8xqrt"><div class="css-128e773"></div></div><div class="css-1yonabt"><div class="css-ak371w"></div></div><div class="css-jge2ik"><div class="css-17y9q6q"></div></div></div></div><div class="page-mode-0 css-1cvuvb8"><div class="ynote-toolbar css-1cq4b9u" style="opacity: unset;"><div class="" data-selector-name="undo"><div class="disabled css-z6sx35" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 7.85a.25.25 0 01-.417.186l-2-1.8a.25.25 0 010-.371l2-1.8a.25.25 0 01.417.185v1.3h5.25a5 5 0 01.217 9.996l-.217.004h-1.534a.2.2 0 01-.2-.2v-.6c0-.11.09-.2.2-.2h1.534a4 4 0 00.2-7.995l-.2-.005H6.5z" fill="#525C6F" fill-rule="nonzero"></path></svg></span></div></div><div class="" data-selector-name="redo"><div class="disabled css-wzn8bc" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M14.25 7.85c0 .217.256.331.417.186l2-1.8a.25.25 0 000-.371l-2-1.8a.25.25 0 00-.417.185v1.3H9a5 5 0 00-.217 9.996L9 15.55h1.534a.2.2 0 00.2-.2v-.6a.2.2 0 00-.2-.2H9a4 4 0 01-.2-7.995L9 6.55h5.25z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div><div class="" data-selector-name="format_painter"><div class="disabled css-1t1lau8" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect stroke="#525C6F" x="4.5" y="4.5" width="9" height="3" rx=".4"></rect><path d="M9 11a1 1 0 00-1 .99v4.019c0 .547.443.99.999.99H10a1 1 0 00.999-.99V11.99a.998.998 0 00-1-.99H9z" fill="#525C6F" fill-rule="nonzero"></path><path d="M13.449 5.5h1.856c.11 0 .2.09.2.2v3.6a.2.2 0 01-.2.2H9.704a.2.2 0 00-.2.2v2.823h0" stroke="#525C6F"></path></g></svg></span></div></div><div class="" data-selector-name="remove_format"><div class="disabled css-1tloig4" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M11.882 4.126l4.224 4.481a.4.4 0 01-.02.568l-5.895 5.458h7.1c.11 0 .2.09.2.2v.6a.2.2 0 01-.2.2H13.29v.001h-7L3.11 12.26a.4.4 0 01.02-.568l8.19-7.584a.4.4 0 01.563.019zM8.539 8.07l-.064.049-3.788 3.513a.402.402 0 00-.068.504l.05.064 2.299 2.433h.023l1.788-.001 3.114-2.886a.402.402 0 00.068-.504l-.05-.064-2.874-3.04a.4.4 0 00-.498-.068z" fill="#525C6F" fill-rule="evenodd"></path></svg></span></div></div><div class="css-v846n0"><div class=" css-8zvmwp">|</div></div><div data-selector-name="heading" class="css-1m4h5jr" disabled=""><div class=""><div class="disabled css-n7244o" disabled=""><span width="62" class="css-1j9rhp3" disabled=""><span style="padding-right: 3px;">正文</span><span class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></span></div></div></div><div data-selector-name="font-family" class="css-1m4h5jr" disabled=""><div class=""><div class="disabled css-3f8l8b" disabled=""><span width="81" class="css-iyrvlu" disabled=""><span style="padding-right: 3px;">默认字体</span><span class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></span></div></div></div><div data-selector-name="font-size" class="css-1m4h5jr" disabled=""><div class=""><div class="disabled css-kimi1h" disabled=""><span class="css-3hr2io" disabled=""><span style="padding-right: 5px;">14</span><span class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></span></div></div></div><div class="css-v846n0"><div class=" css-8zvmwp">|</div></div><div class="" data-selector-name="bold"><div class="disabled css-19sxprh" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect width="20" height="20" rx="2"></rect><path d="M10.41 15c2.495 0 3.673-1.24 3.673-2.976 0-1.627-1.023-2.542-2.278-2.805v-.031c1.178-.419 1.736-1.442 1.736-2.512 0-1.875-1.396-2.681-3.55-2.681H6.795a.4.4 0 00-.4.4V14.6c0 .22.18.4.4.4h3.614zm-.434-6.34H7.784V5.294h1.928c1.752 0 2.415.473 2.415 1.645 0 1.317-1.098 1.72-2.152 1.72zm.061 5.048H7.791V10H10.1c1.674 0 2.514.569 2.514 1.9s-1.011 1.808-2.577 1.808z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div><div class="" data-selector-name="italic"><div class="disabled css-1rc0mcn" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M14.082 4.24l-.12.6a.2.2 0 01-.196.16h-1.527a.4.4 0 00-.393.322l-1.622 8.2a.4.4 0 00.393.478h1.338a.2.2 0 01.197.232l-.097.6a.2.2 0 01-.197.168H7.194a.2.2 0 01-.195-.246l.142-.6A.2.2 0 017.336 14h1.445a.4.4 0 00.393-.322l1.622-8.2A.4.4 0 0010.404 5H9.067a.2.2 0 01-.197-.234l.102-.6A.2.2 0 019.169 4h4.717a.2.2 0 01.196.24z" fill="#525C6F"></path></g></svg></span></div></div><div class="" data-selector-name="underline"><div class="disabled css-16npx9b" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><rect fill="#525C6F" x="6" y="14" width="8" height="1" rx=".2"></rect><path d="M7 4.4v4.976c0 1.235.878 2.234 1.974 2.318l.151.006h1.75c1.114 0 2.041-.945 2.12-2.157L13 9.376V4.4c0-.11.09-.2.2-.2h.6c.11 0 .2.09.2.2v4.976c0 1.765-1.296 3.22-2.947 3.319l-.178.005h-1.75c-1.675 0-3.029-1.394-3.12-3.136L6 9.376V4.4c0-.11.09-.2.2-.2h.6c.11 0 .2.09.2.2z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div><div class="" data-selector-name="delete"><div class="disabled css-zit0ns" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M10.129 15.115c2.553 0 3.841-1.426 3.841-3.036.023-2.185-1.61-2.622-3.933-3.45-1.357-.483-2.461-.828-2.461-2.047 0-1.104 1.012-1.725 2.139-1.725 1.035 0 2.093.253 3.151 1.173.061.04.118.027.17-.04.166-.216.448-.589.52-.688.049-.066.049-.138 0-.215C12.337 4.052 11.072 3.73 9.83 3.73c-2.024 0-3.473 1.196-3.473 2.852 0 1.909 1.472 2.622 3.289 3.243 1.794.621 3.082.966 3.082 2.185 0 1.104-.943 1.955-2.599 1.955-1.771 0-2.76-.575-3.611-1.38-.053-.017-.095-.002-.127.044-.252.37-.448.635-.563.803a.08.08 0 000 .096c1.035.92 2.438 1.587 4.301 1.587z" fill="#525C6F" fill-rule="nonzero"></path><rect fill="#FFF" x="4" y="8.75" width="12" height="1.5" rx=".2"></rect><rect fill="#525C6F" x="4" y="9" width="12" height="1" rx=".2"></rect></g></svg></span></div></div><div data-selector-name="text_color" class="css-1onxdzi" disabled=""><div class="css-1krqozv"><div class="disabled css-10vgb56" disabled=""><span class="css-ofybdm"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M7.108 12.868l.723-1.985a.2.2 0 01.188-.132h3.841a.2.2 0 01.188.132l.723 1.985a.2.2 0 00.188.132h.766a.2.2 0 00.186-.271l-3.32-8.702a.4.4 0 00-.374-.257h-.58a.4.4 0 00-.374.258L5.967 12.73a.2.2 0 00.187.271h.766a.2.2 0 00.188-.132zm4.385-3.105H8.386a.1.1 0 01-.094-.135l1.554-4.225a.1.1 0 01.187 0l1.554 4.225a.1.1 0 01-.094.135z" fill="#444D5F" fill-rule="nonzero"></path></g></svg><span color="#FFFFFF" class="css-11hmyz5"></span></span></div></div><div class="css-1krqozv"><div class="disabled css-1c41hrr" disabled=""><span data-selector-name="dropdown-click" class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div></div><div data-selector-name="text_background" class="css-1onxdzi" disabled=""><div class="css-1krqozv"><div class="disabled css-hnd5y2" disabled=""><span class="css-ofybdm"><svg width="20" height="21" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M5.195 12.999h4.24a.2.2 0 00.173-.097l.057-.097a.2.2 0 00-.074-.276l-3.112-1.75a.2.2 0 00-.266.067L5.026 12.69a.2.2 0 00.169.308z" fill="#525C6F"></path><path d="M7.943 3.4a.2.2 0 01.073.273l-1.339 2.32a.2.2 0 00.073.273l6.582 3.8a.2.2 0 00.273-.074l1.34-2.319a.2.2 0 01.272-.073l.52.3a.2.2 0 01.073.273l-1.439 2.493a1 1 0 01-1.261.418l-.105-.052-.865-.501-.712 1.232a1 1 0 01-1.261.419l-.105-.053-3.464-2a1 1 0 01-.418-1.261l.052-.105.712-1.232-.867-.5A1 1 0 015.66 5.77l.052-.104L7.15 3.173a.2.2 0 01.273-.073l.52.3zm3.33 6.63l-3.463-2-.612 1.06a.2.2 0 00.073.273l3.118 1.8a.2.2 0 00.273-.073l.612-1.06z" fill="#525C6F" fill-rule="nonzero"></path></g></svg><span color="#993AF9" class="css-1lypkvm"></span></span></div></div><div class="css-1krqozv"><div class="disabled css-1yl4orw" disabled=""><span data-selector-name="dropdown-click" class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div></div><div class="css-v846n0"><div class=" css-8zvmwp">|</div></div><div class="" data-selector-name="unordered-list"><div class="disabled css-1yntfkx" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><path d="M15.8 13c.11 0 .2.09.2.2v.6a.2.2 0 01-.2.2H8.2a.2.2 0 01-.2-.2v-.6c0-.11.09-.2.2-.2h7.6zm-10-1c.11 0 .2.09.2.2v1.6a.2.2 0 01-.2.2H4.2a.2.2 0 01-.2-.2v-1.6c0-.11.09-.2.2-.2h1.6zm10-3c.11 0 .2.09.2.2v.6a.2.2 0 01-.2.2H8.2a.2.2 0 01-.2-.2v-.6c0-.11.09-.2.2-.2h7.6zm-10-1c.11 0 .2.09.2.2v1.6a.2.2 0 01-.2.2H4.2a.2.2 0 01-.2-.2V8.2c0-.11.09-.2.2-.2h1.6zm10-3c.11 0 .2.09.2.2v.6a.2.2 0 01-.2.2H8.2a.2.2 0 01-.2-.2v-.6c0-.11.09-.2.2-.2h7.6zm-10-1c.11 0 .2.09.2.2v1.6a.2.2 0 01-.2.2H4.2a.2.2 0 01-.2-.2V4.2c0-.11.09-.2.2-.2h1.6z" fill="#525C6F"></path></g></svg></span></div></div><div class="" data-selector-name="ordered-list"><div class="disabled css-8g9iln" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><rect fill="#525C6F" x="8" y="5" width="8" height="1" rx=".2"></rect><rect fill="#525C6F" x="8" y="9" width="8" height="1" rx=".2"></rect><rect fill="#525C6F" x="8" y="13" width="8" height="1" rx=".2"></rect><path d="M6 4.337V7.54a.2.2 0 01-.2.2h-.6a.2.2 0 01-.2-.2V5.878a.1.1 0 00-.158-.082l-.214.15a.2.2 0 01-.279-.048l-.345-.49a.2.2 0 01.049-.279l1.474-1.037A.3.3 0 016 4.337zM4.198 11.1h2.214a.2.2 0 01.173.3l-.95 1.639a.1.1 0 00.087.15h.776c.11 0 .2.09.2.2v.6a.2.2 0 01-.2.2H4.301a.2.2 0 01-.174-.298l.935-1.642a.1.1 0 00-.087-.15h-.777a.2.2 0 01-.2-.199v-.6c0-.11.09-.2.2-.2z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div><div class="" data-selector-name="todo"><div class="disabled css-smayma" disabled=""><span class="css-1tg1tth"><svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h20v20H0z"></path><circle stroke="#525C6F" cx="10" cy="10" r="5.5"></circle><path d="M12.259 8.057l.429.42a.2.2 0 01.003.282l-3.364 3.443a.2.2 0 01-.292-.006l-1.483-1.64a.2.2 0 01.014-.282l.445-.403a.2.2 0 01.282.014l.77.85a.2.2 0 00.291.006l2.622-2.68a.2.2 0 01.283-.004z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></div></div><div class="css-v846n0"><div class=" css-8zvmwp">|</div></div><div style="position: relative;"><div class="" data-selector-name="show-more"><div class=" css-1g9h3ow"><span width="70" class="css-1d567x9"><span style="padding-right: 3px;">更多</span><span class="css-1tg1tth"><svg width="10" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h10v20H0z"></path><path d="M6.985 8.131l.363.345a.2.2 0 010 .29l-2.21 2.103a.2.2 0 01-.276 0l-2.21-2.103a.2.2 0 010-.29l.363-.345a.2.2 0 01.276 0l1.571 1.495a.2.2 0 00.276 0l1.571-1.495a.2.2 0 01.276 0z" fill="#525C6F" fill-rule="nonzero"></path></g></svg></span></span></div></div></div></div><div class="note-view-wrapper bulb-scroll-container css-qyesxv"><div class="note-view css-1s56bp4" style="font-family: -apple-system, BlinkMacSystemFont, &quot;PingFang SC&quot;, Helvetica, Tahoma, Arial, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, 微软雅黑, SimSun, 宋体, Heiti, 黑体, sans-serif; font-size: 14px; color: rgb(57, 57, 57); font-weight: normal; font-style: normal; text-decoration: none; text-align: left; line-height: 1.75; text-indent: 0px; background-image: url(&quot;&quot;);"><div class="title-widget css-la9emy"><input type="text" placeholder="无标题笔记" spellcheck="false" autocomplete="off" autocapitalize="none" autocorrect="off" class="css-1r2ld0m" value="Vee辅助使用教程"><hr class="css-kxa1qh"></div><div class="bulb-editor bulb-editor-inner" style="white-space: pre-wrap; overflow-wrap: break-word; user-select: unset; cursor: text;"><div data-heading-level="h1" data-bulb-node-id="2fNo-1615863858026" data-block-type="heading" class="css-12bqdft" style="font-weight: bold; font-size: 20px;"><span data-bulb-node-id="Hw2u-1615863858026"><span class="bold font-size" style="font-weight: bold; font-size: 20px; padding-top: 1px; padding-bottom: 1px;">资源下载地址</span></span></div><div data-bulb-node-id="vUeR-1615865044630" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="Q3iK-1615865044630"><span class="" style="padding-top: 1px; padding-bottom: 1px;">Vee辅助：</span></span><span data-bulb-node-id="nviM-1615866070490" data-block-type="link" class="css-17sik9y"><a data-href="https://www.jianguoyun.com/p/DUJvMDcQjfOmCRjgt-YD" href="https://www.jianguoyun.com/p/DUJvMDcQjfOmCRjgt-YD" target="_blank" class="css-abl0rk"><span data-bulb-node-id="m9OJ-1615866070490"><span class="underline color" style="color: rgb(3, 102, 214); padding-top: 1px; padding-bottom: 1px; border-bottom: 1px solid rgb(3, 102, 214);">Vee辅助下载地址</span></span></a></span><span data-bulb-node-id="kLGo-1615866070494"><span class="" style="padding-top: 1px; padding-bottom: 1px;">﻿</span></span></div><div data-bulb-node-id="u6JP-1615865059864" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="OgKH-1615865059864"><span class="" style="padding-top: 1px; padding-bottom: 1px;">霸略征战游戏客户端：</span></span><span data-bulb-node-id="t0t7-1615865971681" data-block-type="link" class="css-17sik9y"><a data-href="https://www.jianguoyun.com/p/DZgODHsQjfOmCRjXt-YD" href="https://www.jianguoyun.com/p/DZgODHsQjfOmCRjXt-YD" target="_blank" class="css-abl0rk"><span data-bulb-node-id="3Ftq-1615865971680"><span class="underline color" style="color: rgb(3, 102, 214); padding-top: 1px; padding-bottom: 1px; border-bottom: 1px solid rgb(3, 102, 214);">霸略征战下载地址</span></span></a></span><span data-bulb-node-id="IyT8-1615865971682"><span class="" style="padding-top: 1px; padding-bottom: 1px;">﻿</span></span></div><div data-bulb-node-id="0CFZ-1615865074118" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="gCVI-1615865074117"><span class="" style="padding-top: 1px; padding-bottom: 1px;">雷电模拟器v4.0：</span></span><span data-bulb-node-id="sBP0-1615865172487" data-block-type="link" class="css-17sik9y"><a data-href="https://www.ldmnq.com/" href="https://www.ldmnq.com/" target="_blank" class="css-abl0rk"><span data-bulb-node-id="KIwU-1615865172486"><span class="underline color" style="color: rgb(3, 102, 214); padding-top: 1px; padding-bottom: 1px; border-bottom: 1px solid rgb(3, 102, 214);">雷电模拟器v4.0下载地址</span></span></a></span><span data-bulb-node-id="3iCE-1615865172491"><span class="" style="padding-top: 1px; padding-bottom: 1px;">﻿</span></span></div><div data-heading-level="h1" data-bulb-node-id="t4xi-1615865173853" data-block-type="heading" class="css-12bqdft" style="font-weight: bold; font-size: 20px;"><span data-bulb-node-id="g3xP-1615865173852"><span class="bold font-size" style="font-weight: bold; font-size: 20px; padding-top: 1px; padding-bottom: 1px;">雷电模拟器端使用教程</span></span></div><div data-bulb-node-id="1phF-1615865187086" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="Zpot-1615865187086"><span class="color" style="padding-top: 1px; padding-bottom: 1px; color: rgb(243, 50, 50);">注意：霸略征战客户端尽量通过上面地址下载，以免辅助出错</span></span></div><div data-heading-level="h3" data-bulb-node-id="MuZk-1615865311022" data-block-type="heading" class="css-12bqdft" style="font-weight: bold; font-size: 16px;"><span data-bulb-node-id="3dX2-1615865311022"><span class="bold font-size" style="font-weight: bold; font-size: 16px; padding-top: 1px; padding-bottom: 1px;">1.雷电模拟器中配置参数</span></span></div><div data-bulb-node-id="WXZn-1615867445699" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="nmtg-1615867445699"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（1）打开设置界面</span></span></div><div data-bulb-node-id="L9eh-1615867493995" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-1u8akre"><img src="./b0.png" alt="https://note.youdao.com/yws/res/89/WEBRESOURCE2fb21cd576812e140e7e4b85733f2ce4" draggable="false" class="css-125smcw" width="306"></div></div></div></div><div data-bulb-node-id="8CAV-1615867268844" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="s0Ch-1615867268845"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（2）配置性能设置</span></span></div><div data-bulb-node-id="g9jQ-1615865345626" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="Kh98-1615865345625"><span class="" style="padding-top: 1px; padding-bottom: 1px;">设备：手机版</span></span></div><div data-bulb-node-id="7RKn-1615865487677" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="1B6g-1615865487677"><span class="" style="padding-top: 1px; padding-bottom: 1px;">分辨率：720x1280</span><span class="color" style="color: rgb(243, 50, 50); padding-top: 1px; padding-bottom: 1px;">（必要）</span></span></div><div data-bulb-node-id="Dwck-1615866128763" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="nNOk-1615866128762"><span class="" style="padding-top: 1px; padding-bottom: 1px;">CPU：4核</span></span></div><div data-bulb-node-id="Ucaj-1615866183832" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="jYE6-1615866183831"><span class="" style="padding-top: 1px; padding-bottom: 1px;">内存：4096M（4096M已经够用，可以更大）</span></span></div><div data-bulb-node-id="p3wn-1615866292661" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="y0UG-1615866292661"><span class="" style="padding-top: 1px; padding-bottom: 1px;">如图：</span></span></div><div data-bulb-node-id="c1ra-1615866284416" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-1f49zpl"><img src="./b1.png" alt="https://note.youdao.com/yws/res/52/WEBRESOURCE1d4ee1134536510462235012c86d7ca3" width="520" draggable="false" class="css-125smcw"></div></div></div></div><div data-bulb-node-id="IPC5-1615866284417" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="E77x-1615866284417"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（3）开启root</span></span></div><div data-bulb-node-id="GxsE-1615867559830" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="YMVr-1615867559829"><span class="" style="padding-top: 1px; padding-bottom: 1px;">进入 其他设置</span></span></div><div data-bulb-node-id="BHTg-1615867725753" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="pIAA-1615867725751"><span class="" style="padding-top: 1px; padding-bottom: 1px;">确保root权限是开启的</span></span></div><div data-bulb-node-id="Jr2B-1615867750002" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-1f49zpl"><img src="./b3.png" alt="https://note.youdao.com/yws/res/95/WEBRESOURCE0014daaff280b4ca3187b344d2fc7dbe" draggable="false" class="css-125smcw" width="520"></div></div></div></div><div data-bulb-node-id="mLsf-1615867542534" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="412W-1615867542533"><span class="" style="padding-top: 1px; padding-bottom: 1px;">点击保存设置后重启模拟器即修改成功</span></span></div><div data-heading-level="h3" data-bulb-node-id="DauW-1615866344246" data-block-type="heading" class="css-12bqdft" style="font-weight: bold; font-size: 16px;"><span data-bulb-node-id="sZtC-1615866344245"><span class="bold font-size" style="font-weight: bold; font-size: 16px; padding-top: 1px; padding-bottom: 1px;">2.安装Vee辅助和霸略征战</span></span></div><div data-bulb-node-id="LGHj-1615866402483" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="xz2I-1615866402483"><span class="" style="padding-top: 1px; padding-bottom: 1px;">从上面地址下载好 Vee辅助 和 霸略征战 后安装到雷电模拟器</span></span></div><div data-bulb-node-id="SBnn-1615866468375" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="NjRJ-1615866468373"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（下载后可能是.dat结尾的文件，在电脑桌面上进行重命名，删掉.dat后缀即可）</span></span></div><div data-bulb-node-id="4jJf-1615866540176" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="hoOx-1615866540175"><span class="" style="padding-top: 1px; padding-bottom: 1px;">把安装包直接拖拽进雷电模拟器即可自动安装</span></span></div><div data-heading-level="h3" data-bulb-node-id="EDWI-1615866559538" data-block-type="heading" class="css-12bqdft" style="font-weight: bold; font-size: 16px;"><span data-bulb-node-id="6lHq-1615866559537"><span class="bold font-size" style="font-weight: bold; font-size: 16px; padding-top: 1px; padding-bottom: 1px;">3.开启辅助</span></span></div><div data-bulb-node-id="Vl02-1615868723583" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="H3Zj-1615868723583"><span class="color" style="padding-top: 1px; padding-bottom: 1px; color: rgb(243, 50, 50);">注意：在每次开启辅助之前需要把霸略征战关闭（后台关闭）</span></span></div><div data-bulb-node-id="ZlMU-1615866765398" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="TyNS-1615866765396"><span class="" style="padding-top: 1px; padding-bottom: 1px;">打开 Vee辅助 -&gt; 填入激活码 -&gt; 配置好所有的账号信息 -&gt; 点击开启脚本 </span></span></div><div data-bulb-node-id="bKrl-1615868386088" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="SQZD-1615868386087"><span class="" style="padding-top: 1px; padding-bottom: 1px;">如果隔两秒自动开启游戏即表示辅助开启成功</span></span></div><div data-bulb-node-id="ZF68-1615868522971" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="YUlI-1615868522970"><span class="color" style="padding-top: 1px; padding-bottom: 1px; color: rgb(243, 50, 50);">！！！请注意辅助开启后不要进行任何手动操作，否则会打扰辅助的运行！！！</span></span></div><div data-bulb-node-id="nMLr-1615868612792" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="gDO9-1615868612791"><span class="color" style="color: rgb(243, 50, 50); padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="e4bc-1615868415932" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="VNXi-1615868415931"><span class="bold background-color color font-size" style="padding-top: 1px; padding-bottom: 1px; font-weight: bold; background-color: rgb(153, 58, 249); color: rgb(255, 255, 255); font-size: 16px;">对于第一次打开辅助的用户，进行以下操作：</span></span></div><div data-bulb-node-id="g6K5-1615868071336" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="0COw-1615868071334"><span class="color" style="padding-top: 1px; padding-bottom: 1px; color: rgb(243, 50, 50);">注意：在开启辅助之前，先进入霸略征战确保里面不需要再更新，建议先登陆一个账号成功进入游戏后再退出游戏，关闭游戏后台</span></span></div><div data-bulb-node-id="tVDj-1615866994833" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="A4sz-1615866994832"><span class="" style="padding-top: 1px; padding-bottom: 1px;">第一次打开 Vee辅助 需要进行授权 以下界面会自动弹出 请根据以下操作进行授权：</span></span></div><div data-bulb-node-id="mYoh-1615867035028" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="gjui-1615867035027"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（1）截屏授权</span></span></div><div data-bulb-node-id="JP0u-1615868269444" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="qw7F-1615868269443"><span class="" style="padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="KK8B-1615867171869" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-xc7ury"><img src="./b2.png" alt="https://note.youdao.com/yws/res/82/WEBRESOURCEf6d3ce639c99758a95df91cae865599f" draggable="false" class="css-125smcw" width="231"></div></div></div></div><div data-bulb-node-id="6GA5-1615867023683" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="byj3-1615867023682"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（2）root授权</span></span></div><div data-bulb-node-id="h9YM-1615868267494" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="YY1Y-1615868267493"><span class="" style="padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="qsxc-1615867918714" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-1pbnpdf"><img src="./b4.png" alt="https://note.youdao.com/yws/res/102/WEBRESOURCE0fbc284d3f69aec4e619b07994ecfad2" draggable="false" class="css-125smcw" width="233"></div></div></div></div><div data-bulb-node-id="me8t-1615866918519" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="pk66-1615866918518"><span class="" style="padding-top: 1px; padding-bottom: 1px;">（3）无障碍服务授权</span></span></div><div data-bulb-node-id="U54k-1615868265789" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="cMwA-1615868265786"><span class="" style="padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="9hq3-1615868011956" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-xc7ury"><img src="./b5.png" alt="https://note.youdao.com/yws/res/106/WEBRESOURCE24399a0f6ed39bd18e51826f194d6f48" draggable="false" class="css-125smcw" width="231"></div></div></div></div><div data-bulb-node-id="P0gc-1615868011966" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="MtDr-1615868011964"><span class="" style="padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="ocF9-1615868155073" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-xc7ury"><img src="./b6.png" alt="https://note.youdao.com/yws/res/111/WEBRESOURCE3be0771ef65bfd6e4f6f327935f9f5d9" width="231" draggable="false" class="css-125smcw"></div></div></div></div><div data-bulb-node-id="j4Ro-1615868155074" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="Wsd7-1615868155074"><span class="" style="padding-top: 1px; padding-bottom: 1px;"><span>&nbsp;</span></span></span></div><div data-bulb-node-id="GF5z-1615868244460" data-block-type="image" data-float="false" class="css-1u2bxy"><div class="css-1hg53gd"><div class="css-cf8cyr"><div class="css-7cfrzo"><img src="./b7.png" alt="https://note.youdao.com/yws/res/113/WEBRESOURCE55b26799a7b1e70ea436e08e93dbd842" draggable="false" class="css-125smcw" width="228"></div></div></div></div><div data-bulb-node-id="ahBK-1615868244465" data-block-type="paragraph" class="css-1xgc5oj"><span data-bulb-node-id="5HeV-1615868244464"><span class="" style="padding-top: 1px; padding-bottom: 1px;">经过以上三步后即授权成功，从此辅助都可以正常使用</span></span></div><div></div><div class="bulb-drag-shadow" style="display: none;"></div></div></div><div class="ynote-inline-toolbar css-be627g"><div class="css-1gnwfu6"><div width="282" class="css-gsk0w4"></div></div></div></div></div></div>
+</body></html>
